@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
-from scraper.scraper import scrape_reviews 
+from scraper.scraper import scrape_reviews
+
 
 app = Flask(__name__)
 
