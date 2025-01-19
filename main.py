@@ -1,28 +1,22 @@
-from flask import Flask, request, jsonify
-from scraper.scraper import scrape_reviews
-
+from flask import Flask, render_template, request, jsonify
+from scraper.scraper import scrape_reviews  #Importing scraper logic
 
 app = Flask(__name__)
 
-# Removed query parameter from the route definition
+#Front-end route
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+#API route for scraping
 @app.route('/api/reviews', methods=['GET'])
 def get_reviews():
-    # Query parameter is handled inside the function
     url = request.args.get('page')
     if not url:
         return jsonify({"error": "URL parameter is required"}), 400
-    
-    if not url.startswith("http") :
-        return jsonify({"error" : "Invalid URL format. Must start with http/https"}), 400
-    
-    try:
-        reviews = scrape_reviews(url)
-        return jsonify({
-            "reviews_count": len(reviews),
-            "reviews": reviews
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+
+    reviews = scrape_reviews(url)
+    return jsonify(reviews)
 
 if __name__ == "__main__":
     app.run(debug=True)
